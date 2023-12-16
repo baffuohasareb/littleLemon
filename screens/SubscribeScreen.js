@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Image, View, StyleSheet, Text, TextInput,Pressable } from 'react-native';
 import { validateEmail } from '../utils';
 
@@ -6,16 +6,21 @@ const SubscribeScreen = ({ navigation }) => {
   const logo = require("../assets/little-lemon-logo-grey.png");
 
   const [email, setEmail] = useState('');
+  const [isValidEmail, setIsValidEmail] = useState(false);
 
   const handleSubscribePress = () => {
-    if (email !== '' && validateEmail(email)) {
+    if (validateEmail(email)) {
       alert("You have successfully subscribed!");
       navigation.navigate("Welcome");
-    } else
-    if (email !== '' && !validateEmail(email)) {
+    } else {
       alert("Please enter a valid email address.");
     }
   }
+
+  useEffect(() => {
+    setIsValidEmail(validateEmail(email));
+  }, [email]);
+
   return(
     <View style={Styles.container}>
       <Image
@@ -34,7 +39,7 @@ const SubscribeScreen = ({ navigation }) => {
         keyboardType='email-address'
       />
 
-      <Pressable style={email === '' ? Styles.inactive : Styles.button} onPress={handleSubscribePress}>
+      <Pressable style={!isValidEmail ? Styles.inactive : Styles.button} onPress={handleSubscribePress}>
         <Text style={Styles.buttonText}>Subscribe</Text>
       </Pressable>
     </View>
